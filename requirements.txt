@@ -1,0 +1,6 @@
+flask
+groq
+requests
+pyngrok
+python-dotenv
+pytest
