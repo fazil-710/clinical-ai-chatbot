@@ -1,1 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Healthy Clinic - Smart Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#eef4ff;
+    --bg-accent:#dbf5ef;
+    --surface:#ffffffcc;
+    --surface-solid:#ffffff;
+    --text:#1d2433;
+    --muted:#6d7688;
+    --brand:#1b8f71;
+    --brand-2:#4b7dff;
+    --brand-soft:#e8f7f2;
+    --line:#d9e2f0;
+    --shadow:0 24px 60px rgba(14,29,57,.14);
+    --user-bubble:#1b8f71;
+    --bot-bubble:#edf7f3;
+  }
+  html[data-theme="dark"]{
+    --bg:#101522;
+    --bg-accent:#12202a;
+    --surface:#172033d9;
+    --surface-solid:#172033;
+    --text:#ecf3ff;
+    --muted:#9eaac1;
+    --brand:#2cc59a;
+    --brand-2:#75a0ff;
+    --brand-soft:#1c2f2a;
+    --line:#28354e;
+    --shadow:0 24px 60px rgba(0,0,0,.45);
+    --user-bubble:#2cc59a;
+    --bot-bubble:#1d2b27;
+  }
+  body{
+    font-family:"Plus Jakarta Sans",sans-serif;
+    color:var(--text);
+    min-height:100vh;
+    background:
+      radial-gradient(900px 420px at -10% -15%, var(--bg-accent), transparent 60%),
+      radial-gradient(900px 420px at 110% 115%, #dfe8ff, transparent 60%),
+      var(--bg);
+    padding:22px;
+  }
+  .shell{
+    width:min(1100px,100%);
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:320px 1fr;
+    gap:18px;
+  }
+  .glass{
+    background:var(--surface);
+    backdrop-filter:blur(12px);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow);
+    border-radius:24px;
+  }
+  .sidebar{
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    height:calc(100vh - 44px);
+    position:sticky;
+    top:22px;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .brand-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .logo{
+    width:44px;height:44px;border-radius:14px;
+    background:linear-gradient(145deg,var(--brand),var(--brand-2));
+    display:grid;place-items:center;
+    color:#fff;font-size:20px;
+  }
+  .brand h1{
+    font-family:Outfit,sans-serif;
+    font-size:1.06rem;
+    line-height:1.1;
+  }
+  .status{
+    font-size:.74rem;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:4px;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#1fd474;
+    box-shadow:0 0 0 8px #1fd47420;
+    animation:pulse 1.7s infinite;
+  }
+  .icon-btn{
+    border:1px solid var(--line);
+    background:var(--surface-solid);
+    color:var(--text);
+    width:36px;height:36px;border-radius:12px;
+    cursor:pointer;
+  }
+  .hero{
+    border-radius:18px;
+    padding:14px;
+    background:linear-gradient(135deg,#1b8f7122,#4b7dff24);
+    border:1px solid var(--line);
+  }
+  .hero h2{
+    font-family:Outfit,sans-serif;
+    font-size:1rem;
+    margin-bottom:6px;
+  }
+  .hero p{
+    font-size:.84rem;
+    color:var(--muted);
+    line-height:1.5;
+  }
+  .tool-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+  .tool-btn{
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:var(--surface-solid);
+    color:var(--text);
+    font-size:.8rem;
+    padding:10px 8px;
+    cursor:pointer;
+  }
+  .tool-btn:hover{border-color:var(--brand)}
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    border:none;
+    background:var(--brand-soft);
+    color:var(--brand);
+    border-radius:999px;
+    font-size:.77rem;
+    padding:8px 11px;
+    cursor:pointer;
+  }
+  .main{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    height:calc(100vh - 44px);
+  }
+  .topbar{
+    padding:14px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .topbar h3{
+    font-family:Outfit,sans-serif;
+    font-size:1.03rem;
+  }
+  .topbar p{
+    font-size:.78rem;color:var(--muted);
+  }
+  .actions{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .action-btn{
+    border:1px solid var(--line);
+    background:var(--surface-solid);
+    color:var(--text);
+    border-radius:10px;
+    font-size:.77rem;
+    padding:8px 11px;
+    cursor:pointer;
+  }
+  .chat-card{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    border-radius:24px;
+  }
+  .messages{
+    flex:1;
+    overflow:auto;
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    scroll-behavior:smooth;
+  }
+  .msg{
+    display:flex;gap:9px;
+    align-items:flex-end;
+  }
+  .msg.user{flex-direction:row-reverse}
+  .avatar{
+    width:30px;height:30px;border-radius:50%;
+    background:var(--brand-soft);
+    display:grid;place-items:center;
+    font-size:13px;
+  }
+  .msg.user .avatar{background:var(--brand);color:#fff}
+  .bubble{
+    max-width:min(74%,600px);
+    padding:12px 14px;
+    border-radius:16px;
+    line-height:1.55;
+    font-size:.92rem;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+  }
+  .msg.bot .bubble{
+    background:var(--bot-bubble);
+    border-bottom-left-radius:4px;
+  }
+  .msg.user .bubble{
+    background:var(--user-bubble);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .typing{display:none;padding:0 18px 12px}
+  .typing.show{display:flex}
+  .typing-shell{
+    margin-left:39px;
+    display:flex;
+    gap:4px;
+    background:var(--bot-bubble);
+    padding:10px 12px;
+    border-radius:12px;
+  }
+  .typing-shell span{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--brand);
+    animation:bounce 1.1s infinite;
+  }
+  .typing-shell span:nth-child(2){animation-delay:.2s}
+  .typing-shell span:nth-child(3){animation-delay:.4s}
+  .composer{
+    border-top:1px solid var(--line);
+    padding:12px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    background:var(--surface-solid);
+  }
+  .composer-row{
+    display:flex;gap:8px;align-items:center;
+  }
+  .composer input{
+    flex:1;
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--text);
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:.92rem;
+    outline:none;
+  }
+  .composer input:focus{border-color:var(--brand)}
+  .send{
+    border:none;
+    width:44px;height:44px;
+    border-radius:12px;
+    background:linear-gradient(145deg,var(--brand),var(--brand-2));
+    color:#fff;font-size:18px;
+    cursor:pointer;
+  }
+  .footer{
+    text-align:center;
+    color:var(--muted);
+    font-size:.75rem;
+  }
+  .muted{
+    color:var(--muted);
+    font-size:.78rem;
+  }
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+  @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @media (max-width:940px){
+    .shell{grid-template-columns:1fr}
+    .sidebar{height:auto;position:static}
+    .main{height:auto}
+    .chat-card{height:68vh}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar glass">
+    <div class="brand">
+      <div class="brand-left">
+        <div class="logo">🏥</div>
+        <div>
+          <h1>Healthy Clinic</h1>
+          <div class="status"><span class="dot"></span>Assistant online 24/7</div>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="toggleTheme()" title="Toggle dark mode">🌓</button>
+    </div>
 
+    <div class="hero">
+      <h2>Smart Patient Help Desk</h2>
+      <p>Ask about appointments, services, timings, and emergency guidance in English or Tamil.</p>
+    </div>
+
+    <div class="tool-grid">
+      <button class="tool-btn" onclick="insertTemplate('I want to book an appointment for tomorrow.')">Book Visit</button>
+      <button class="tool-btn" onclick="insertTemplate('What tests are available today?')">Lab Enquiry</button>
+      <button class="tool-btn" onclick="insertTemplate('I need emergency support now.')">Emergency</button>
+      <button class="tool-btn" onclick="insertTemplate('Please speak in Tamil.')">Tamil Mode</button>
+    </div>
+
+    <div class="chips">
+      <button class="chip" onclick="quickSend('What are your clinic timings?')">Clinic Timings</button>
+      <button class="chip" onclick="quickSend('What services do you offer?')">Services</button>
+      <button class="chip" onclick="quickSend('How do I get a blood test appointment?')">Blood Test</button>
+      <button class="chip" onclick="quickSend('Can I walk in without booking?')">Walk-in</button>
+      <button class="chip" onclick="quickSend('Share emergency contact details.')">Emergency Contact</button>
+    </div>
+
+    <p class="muted">Tip: Use mic button for voice input and export icon to save chat transcript.</p>
+  </aside>
+
+  <main class="main">
+    <div class="topbar glass">
+      <div>
+        <h3>Clinic Concierge Chat</h3>
+        <p>Fast, friendly and contextual patient support</p>
+      </div>
+      <div class="actions">
+        <button class="action-btn" onclick="copyLastReply()">Copy Last Reply</button>
+        <button class="action-btn" onclick="exportChat()">Export Chat</button>
+        <button class="action-btn" onclick="clearChat()">Clear Chat</button>
+      </div>
+    </div>
+
+    <section class="chat-card glass">
+      <div class="messages" id="messages">
+        <div class="msg bot">
+          <div class="avatar">🏥</div>
+          <div class="bubble">Hello and welcome to Healthy Clinic. I am your smart assistant. Tell me how I can help you today.</div>
+        </div>
+      </div>
+      <div class="typing" id="typing">
+        <div class="typing-shell">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="composer">
+        <div class="chips">
+          <button class="chip" onclick="quickSend('Book an appointment')">Appointment</button>
+          <button class="chip" onclick="quickSend('Available vaccinations')">Vaccination</button>
+          <button class="chip" onclick="quickSend('Please answer in Tamil language')">தமிழ்</button>
+        </div>
+        <div class="composer-row">
+          <button class="icon-btn" onclick="startVoiceInput()" title="Voice input">🎤</button>
+          <input id="userInput" type="text" placeholder="Type your health query..." onkeydown="if(event.key==='Enter'){sendMessage();}"/>
+          <button class="send" onclick="sendMessage()" title="Send">➤</button>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">Powered by Healthy Clinic AI Assistant</p>
+  </main>
+</div>
+
+<script>
+  const messagesEl = document.getElementById("messages");
+  const inputEl = document.getElementById("userInput");
+  const typingEl = document.getElementById("typing");
+  const htmlEl = document.documentElement;
+  let lastBotReply = "";
+  const webConversationId = (function getConversationId() {
+    const existing = localStorage.getItem("clinic_web_conversation_id");
+    if (existing) return existing;
+    const generated = `web-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    localStorage.setItem("clinic_web_conversation_id", generated);
+    return generated;
+  })();
+
+  function appendMessage(text, sender) {
+    const wrap = document.createElement("div");
+    wrap.className = `msg ${sender}`;
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.textContent = sender === "bot" ? "🏥" : "👤";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+    wrap.appendChild(avatar);
+    wrap.appendChild(bubble);
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    if (sender === "bot") {
+      lastBotReply = text;
+    }
+  }
+
+  async function sendMessage() {
+    const msg = inputEl.value.trim();
+    if (!msg) return;
+    inputEl.value = "";
+    appendMessage(msg, "user");
+    typingEl.classList.add("show");
+    try {
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({message: msg, conversation_id: webConversationId})
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Unable to contact assistant");
+      }
+      appendMessage(data.reply || "I could not understand that. Please try again.", "bot");
+    } catch (error) {
+      appendMessage(error.message || "Sorry, there was a temporary issue. Please retry in a moment.", "bot");
+    } finally {
+      typingEl.classList.remove("show");
+    }
+  }
+
+  function quickSend(text) {
+    inputEl.value = text;
+    sendMessage();
+  }
+
+  function insertTemplate(text) {
+    inputEl.value = text;
+    inputEl.focus();
+  }
+
+  function clearChat() {
+    messagesEl.innerHTML = "";
+    appendMessage("Chat cleared. How can I support you now?", "bot");
+  }
+
+  async function copyLastReply() {
+    if (!lastBotReply) return;
+    try {
+      await navigator.clipboard.writeText(lastBotReply);
+      appendToolNotice("Last bot reply copied to clipboard.");
+    } catch (error) {
+      appendToolNotice("Clipboard access is blocked in this browser.");
+    }
+  }
+
+  function exportChat() {
+    const rows = Array.from(messagesEl.querySelectorAll(".msg")).map((item) => {
+      const role = item.classList.contains("user") ? "Patient" : "Clinic Assistant";
+      const text = item.querySelector(".bubble")?.textContent || "";
+      return `${role}: ${text}`;
+    });
+    const blob = new Blob([rows.join("\n\n")], {type: "text/plain;charset=utf-8"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "healthy-clinic-chat.txt";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    appendToolNotice("Chat exported successfully.");
+  }
+
+  function toggleTheme() {
+    const next = htmlEl.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    htmlEl.setAttribute("data-theme", next);
+    localStorage.setItem("clinic_theme", next);
+  }
+
+  function appendToolNotice(text) {
+    const note = document.createElement("p");
+    note.className = "muted";
+    note.textContent = text;
+    messagesEl.appendChild(note);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    setTimeout(() => note.remove(), 2200);
+  }
+
+  function startVoiceInput() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      appendToolNotice("Voice input is not supported in this browser.");
+      return;
+    }
+    const recognizer = new SpeechRecognition();
+    recognizer.lang = "en-IN";
+    recognizer.interimResults = false;
+    recognizer.maxAlternatives = 1;
+    recognizer.onresult = (event) => {
+      const transcript = event.results[0][0].transcript || "";
+      inputEl.value = transcript;
+      inputEl.focus();
+    };
+    recognizer.onerror = () => appendToolNotice("Could not capture voice input.");
+    recognizer.start();
+  }
+
+  (function initTheme() {
+    const saved = localStorage.getItem("clinic_theme");
+    if (saved) {
+      htmlEl.setAttribute("data-theme", saved);
+    }
+  })();
+</script>
+</body>
+</html>
